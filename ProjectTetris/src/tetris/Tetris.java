@@ -24,12 +24,6 @@ public class Tetris {
 	static int[][] map = new int[V_MAX][H_MAX];
 	static int score = 0;
 	
-	private String currentBlock = "";
-	
-	public String getCurrentBlock() {
-		return currentBlock;
-	}
-
 	public void showMainMenu() {
 		System.out.println("=====TETRIS=====");
 		System.out.println("1. Play New Game");
@@ -164,6 +158,29 @@ public class Tetris {
 		}
 		return null;
 	}
+	public Block generateBlock(int blockType) {
+		HashMap<Integer, Block> temp = createBlockList();
+		int num = blockType;
+		Set<Integer> keys = temp.keySet();
+		
+		for (int key : keys) {
+			if (key == num) {
+				return temp.get(num);
+			}
+		}
+		return null;
+	}
+	
+	public boolean checkGameOver(ArrayList<Point> points) {
+		for (int i = 0; i < points.size(); i++) {
+			int y = points.get(i).getY();
+			int x = points.get(i).getX();
+			if (y < V_SMAX) {
+				return true;
+			}
+		}
+		return false;
+	}
 	
 	public boolean playGame(Block b, ArrayList<Point> points) {
 		while (true) {
@@ -178,24 +195,48 @@ public class Tetris {
 				b.rotateBlock();
 			} else if (choose == Button.BUTTON_FOUR.ordinal()) {
 				b.dropBlock();
+				if (checkGameOver(points)) {
+					System.out.println("[Message] GAME OVER!");
+					System.out.println();
+					return true;
+				}
 				getTotalScore();
 				checkFilled();
 				return false;
 			} else if (choose == Button.BUTTON_FIVE.ordinal()) {
-				FileManager.instance.saveGame();
+				FileManager.instance.saveGameMap();
+				FileManager.instance.saveGameBlock(b, points);
 			} else if (choose == Button.BUTTON_ZERO.ordinal()) {
 				return true;
 			}
 		}
 	}
 	
-	public void startGame() {
+	public void startNewGame() {
 		while (true) {
 			Block b = generateBlock();
-			currentBlock = b.blockName;
 			ArrayList<Point> points = b.getPoints();
 			if (playGame(b,points)) {
 				return;
+			}
+		}
+	}
+	
+	public void startLoadGame() {
+		boolean flag = false;
+		if (FileManager.instance.loadGameMap()) {
+			while (true) {
+				Block b = null;
+				if (flag == false) {
+					b = FileManager.instance.loadGameBlock();
+					flag = true;
+				} else {
+					b = generateBlock();
+				}
+				ArrayList<Point> points = b.getPoints();
+				if (playGame(b,points)) {
+					return;
+				}
 			}
 		}
 	}
@@ -205,12 +246,12 @@ public class Tetris {
 			showMainMenu();
 			int choose = scan.nextInt();
 			if (choose == Button.BUTTON_ONE.ordinal()) {
-				startGame();
+				startNewGame();
 			} else if (choose == Button.BUTTON_TWO.ordinal()) {
-				FileManager.instance.loadGame();
+				startLoadGame();
 			}
 			else if (choose == Button.BUTTON_ZERO.ordinal()) {
-				System.out.println("Thank you for Playing!");
+				System.out.println("[Message] Thank you for Playing!");
 				break;
 			}
 		}
