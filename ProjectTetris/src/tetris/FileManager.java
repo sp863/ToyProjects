@@ -2,6 +2,7 @@ package tetris;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -30,20 +31,10 @@ public class FileManager {
 	
 	public void saveGameMap() {
 		String data = orgMapData();
-		FileWriter fw = null;
-		try {
-			fw = new FileWriter(mapFileName);
+		try (FileWriter fw = new FileWriter(mapFileName)){
 			fw.write(data);
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			if (fw != null) {
-				try {
-					fw.close();
-				} catch (Exception e2) {
-					e2.printStackTrace();
-				}
-			}
 		}
 	}
 	
@@ -65,71 +56,39 @@ public class FileManager {
 	
 	public void saveGameBlock(Block b, ArrayList<Point> points) {
 		String data = orgBlockData(b, points);
-		FileWriter fw = null;
-		try {
-			fw = new FileWriter(blockFileName);
+		try (FileWriter fw = new FileWriter(blockFileName)){
 			fw.write(data);
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			if (fw != null) {
-				try {
-					fw.close();
-				} catch (Exception e2) {
-					e2.printStackTrace();
-				}
-			}
 		}
 	}
 	
 	public Block loadGameBlock() {
 		File file = new File(blockFileName);
-		FileReader fr = null;
-		BufferedReader br = null;
 		Block b = null;
-		ArrayList<Point> p = null;
 		
-		if (file.exists()) {
-			try {
-				fr = new FileReader(file);
-				br = new BufferedReader(fr);
-				//getBlockType -------------------------------------------------------
-				String tempBlock = br.readLine();
-				int blockType = Integer.parseInt(tempBlock);
-				b = Tetris.getInstance().generateBlock(blockType);
-				p = b.getPoints();
-				//getPoints -------------------------------------------------------
-				while (true) {
-					String line = br.readLine();
-					if (line == null) {
-						break;
-					}
-					String[] temp = line.split("\n");
-					for (int i = 0; i < temp.length; i++) {
-						String[] temp2 = line.split(",");
-						int y = Integer.parseInt(temp2[0]);
-						int x = Integer.parseInt(temp2[1]);
-						p.get(i).setY(y);
-						p.get(i).setX(x);
-					}
+		try (FileReader fr = new FileReader(file); BufferedReader br = new BufferedReader(fr);) {
+			//getBlockType -------------------------------------------------------
+			String tempBlock = br.readLine();
+			int blockType = Integer.parseInt(tempBlock);
+			b = Tetris.getInstance().generateBlock(blockType);
+			
+			//getPoints -------------------------------------------------------
+			int k = 0;
+			while (true) {
+				String line = br.readLine();
+				if (line == null) {
+					break;
 				}
-				
-			} catch (Exception e) {
-				e.printStackTrace();
-			} finally {
-				if (fr != null) {
-					try {
-						fr.close();
-					} catch (Exception e2) {
-					}
-				}
-				if (br != null) {
-					try {
-						br.close();
-					} catch (Exception e2) {
-					}
-				}
+				String[] temp = line.split(",");
+				int y = Integer.parseInt(temp[0]);
+				int x = Integer.parseInt(temp[1]);
+				b.getPoints().get(k).setY(y);
+				b.getPoints().get(k).setX(x);
+				k++;
 			}
+		} catch (FileNotFoundException e) {
+		} catch (IOException e1) {
 		}
 		return b;
 	}
@@ -138,48 +97,28 @@ public class FileManager {
 		boolean existFile = false;
 		
 		File file = new File(mapFileName);
-		FileReader fr = null;
-		BufferedReader br = null;
 		
-		if (file.exists()) {
-			existFile = true;
-			
-			try {
-				fr = new FileReader(file);
-				br = new BufferedReader(fr);
-				//getMap -------------------------------------------------------
-				while (true) {
-					String line = br.readLine();
-					if (line == null) {
-						break;
-					}
-					String[] temp = line.split("\n");
-					for (int i = 0; i < temp.length; i++) {
-						String[] temp2 = temp[i].split(",");
-						for (int j = 0; j < temp2.length; j++) {
-							int tempNum = Integer.parseInt(temp2[j]);
-							Tetris.map[i][j] = tempNum;
-						}
-					}
+		try (FileReader fr = new FileReader(file); BufferedReader br = new BufferedReader(fr);){
+			//getMap -------------------------------------------------------
+			int k = 0;
+			while (true) {
+				String line = br.readLine();
+				if (line == null) {
+					break;
 				}
-				System.out.println("[Message] Saved game successfully loaded.");
-				
-			} catch (Exception e) {
-				e.printStackTrace();
-			} finally {
-				if (fr != null) {
-					try {
-						fr.close();
-					} catch (IOException e2) {
-					}
+				String[] temp = line.split(",");
+				for (int i = 0; i < temp.length; i++) {
+					int tempNum = Integer.parseInt(temp[i]);
+					Tetris.map[k][i] = tempNum;
 				}
-				if (br != null) {
-					try {
-						br.close();
-					} catch (IOException e2) {
-					}
-				}
+				k++;
 			}
+			System.out.println("[Message] Saved game successfully loaded.");
+			existFile = true;
+		} catch (FileNotFoundException e) {
+			System.out.println("[Message] Saved file not found.");
+		} catch (IOException e1) {
+			e1.printStackTrace();
 		}
 		return existFile;
 	}

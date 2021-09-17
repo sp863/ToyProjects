@@ -24,6 +24,8 @@ public class Tetris {
 	static int[][] map = new int[V_MAX][H_MAX];
 	static int score = 0;
 	
+	boolean isLoaded = false;
+	
 	public void showMainMenu() {
 		System.out.println("=====TETRIS=====");
 		System.out.println("1. Play New Game");
@@ -223,13 +225,12 @@ public class Tetris {
 	}
 	
 	public void startLoadGame() {
-		boolean flag = false;
 		if (FileManager.instance.loadGameMap()) {
 			while (true) {
 				Block b = null;
-				if (flag == false) {
+				if (isLoaded == false) {
 					b = FileManager.instance.loadGameBlock();
-					flag = true;
+					isLoaded = true;
 				} else {
 					b = generateBlock();
 				}
@@ -249,8 +250,7 @@ public class Tetris {
 				startNewGame();
 			} else if (choose == Button.BUTTON_TWO.ordinal()) {
 				startLoadGame();
-			}
-			else if (choose == Button.BUTTON_ZERO.ordinal()) {
+			} else if (choose == Button.BUTTON_ZERO.ordinal()) {
 				System.out.println("[Message] Thank you for Playing!");
 				break;
 			}
