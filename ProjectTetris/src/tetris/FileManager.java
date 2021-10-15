@@ -1,28 +1,32 @@
 package tetris;
 
 import java.io.BufferedReader;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import block.Block;
+import block.BlockController;
+import static utils.Constant.*;
 
 public class FileManager {
 	static FileManager instance = new FileManager();
-	private String mapFileName = "SavedGameMap.txt";
-	private String blockFileName = "SavedGameBlock.txt";
+	private String mapFileName = MAP_FILENAME;
+	private String blockFileName = BLOCK_FILENAME;
 	
 	public String orgMapData() {
 		String data = "";
-		for (int i = 0; i < Tetris.V_MAX; i++) {
-			for (int j = 0; j < Tetris.H_MAX; j++) {
+		for (int i = 0; i < MAX_VERTICAL_LENGTH; i++) {
+			for (int j = 0; j < MAX_HORIZONTAL_LENGTH; j++) {
 				data += Tetris.map[i][j];
-				if (j < Tetris.H_MAX-1) {
+				if (j < MAX_HORIZONTAL_LENGTH-1) {
 					data += ",";
 				}
 			}
-			if (i < Tetris.V_MAX-1) {
+			if (i < MAX_VERTICAL_LENGTH-1) {
 				data += "\n";
 			}
 		}
@@ -41,7 +45,7 @@ public class FileManager {
 	public String orgBlockData(Block b, ArrayList<Point> points) {
 		String data = "";
 		ArrayList<Point> p = points;
-		data += b.blockNum;
+		data += b.getBlockNum();
 		data += "\n";
 		for (int i = 0; i < p.size(); i++) {
 			data += p.get(i).getY();
@@ -63,7 +67,7 @@ public class FileManager {
 		}
 	}
 	
-	public Block loadGameBlock() {
+	public Block loadGameBlock(BlockController blockController) {
 		File file = new File(blockFileName);
 		Block b = null;
 		
@@ -71,7 +75,7 @@ public class FileManager {
 			//getBlockType -------------------------------------------------------
 			String tempBlock = br.readLine();
 			int blockType = Integer.parseInt(tempBlock);
-			b = Tetris.getInstance().generateBlock(blockType);
+			b = blockController .generateBlock(blockType);
 			
 			//getPoints -------------------------------------------------------
 			int k = 0;
@@ -100,6 +104,7 @@ public class FileManager {
 		
 		try (FileReader fr = new FileReader(file); BufferedReader br = new BufferedReader(fr);){
 			//getMap -------------------------------------------------------
+			Tetris.map = new int[MAX_VERTICAL_LENGTH][MAX_HORIZONTAL_LENGTH];
 			int k = 0;
 			while (true) {
 				String line = br.readLine();
@@ -113,15 +118,13 @@ public class FileManager {
 				}
 				k++;
 			}
-			System.out.println("[Message] Saved game successfully loaded.");
+			System.out.println(GAME_LOAD_MESSAGE);
 			existFile = true;
 		} catch (FileNotFoundException e) {
-			System.out.println("[Message] Saved file not found.");
+			System.out.println(GAME_FILE_NOTFOUND_MESSAGE);
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
 		return existFile;
 	}
-	
-
 }

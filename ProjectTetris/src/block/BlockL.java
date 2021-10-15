@@ -1,17 +1,21 @@
-package tetris;
+package block;
 
 import java.util.ArrayList;
 import java.util.Random;
+import tetris.Point;
+import tetris.Tetris;
+import static utils.Constant.*;
 
 public class BlockL extends Block {
 	private int dir = 1;
 
 	public BlockL () {
-		super.blockNum = 1002;
+		blockNum = BLOCK_L;
 		super.blockName = "L";
 		setPoints();
 	}
 	
+	@Override
 	public int randomStart() {
 		Random ran = new Random();
 		int r = ran.nextInt(9);
@@ -31,13 +35,6 @@ public class BlockL extends Block {
 		}
 		Point p = new Point(y-1, start+1);
 		super.points.add(p);
-	}
-	
-	public boolean checkRotate(int y, int x) {
-		if (y < 0 || y > 9 || x < 0 || x > 9) {
-			return false;
-		}
-		return true;
 	}
 	
 	@Override
@@ -70,8 +67,8 @@ public class BlockL extends Block {
 		}
 	}
 	public void rotateDir2(int y, int x) {
-		if (x > Tetris.H_MAX-BLOCK_LEN+1) { //bigger than 7
-			int tempX = Tetris.H_MAX-BLOCK_LEN+1;
+		if (x > MAX_HORIZONTAL_LENGTH-BLOCK_LENGTH+1) { //bigger than 7
+			int tempX = MAX_HORIZONTAL_LENGTH-BLOCK_LENGTH+1;
 			points.get(3).setY(y);
 			points.get(3).setX(tempX);
 			for (int i = 2; i >= 0; i--) {
@@ -98,8 +95,8 @@ public class BlockL extends Block {
 		}
 	}
 	public void rotateDir4(int y, int x) {
-		if (x == Tetris.H_MAX-2) {
-			int tempX = Tetris.H_MAX-1;
+		if (x == MAX_HORIZONTAL_LENGTH-2) {
+			int tempX = MAX_HORIZONTAL_LENGTH-1;
 			points.get(3).setX(tempX);
 			int b = 0;
 			for (int i = 2; i >= 0; i--) {

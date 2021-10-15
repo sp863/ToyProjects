@@ -1,17 +1,21 @@
-package tetris;
+package block;
 
 import java.util.ArrayList;
 import java.util.Random;
+import tetris.Point;
+import tetris.Tetris;
+import static utils.Constant.*;
 
 public class BlockT extends Block {
 	private int dir = 1;
 	
 	public BlockT () {
-		super.blockNum = 1004;
+		blockNum = BLOCK_T;
 		super.blockName = "T";
 		setPoints();
 	}
 	
+	@Override
 	public int randomStart() {
 		Random ran = new Random();
 		int r = ran.nextInt(8)+1;
@@ -26,17 +30,10 @@ public class BlockT extends Block {
 		
 		Point p = new Point(y, start);
 		super.points.add(p);
-		for (int i = start-1; i < start-1+(BLOCK_LEN-1); i++) {
+		for (int i = start-1; i < start-1+(BLOCK_LENGTH-1); i++) {
 			Point a = new Point(y+1, i);
 			super.points.add(a);
 		}
-	}
-	
-	public boolean checkRotate(int y, int x) {
-		if (y < 0 || y > Tetris.V_MAX || x < 0 || x > Tetris.H_MAX) {
-			return false;
-		}
-		return true;
 	}
 
 	@Override
@@ -60,10 +57,10 @@ public class BlockT extends Block {
 	}
 	
 	public void rotateDir1(int y, int x) {
-		if (x == Tetris.H_MAX-2) {
+		if (x == MAX_HORIZONTAL_LENGTH-2) {
 			points.get(0).setY(y-1);
 			int b = 1;
-			for (int i = 0; i < BLOCK_LEN-1; i++) {
+			for (int i = 0; i < BLOCK_LENGTH-1; i++) {
 				points.get(b).setY(y);
 				points.get(b).setX(x-1+i);
 				b++;
@@ -72,7 +69,7 @@ public class BlockT extends Block {
 			points.get(0).setY(y-1);
 			points.get(0).setX(x+1);
 			int b = 1;
-			for (int i = 0; i < BLOCK_LEN-1; i++) {
+			for (int i = 0; i < BLOCK_LENGTH-1; i++) {
 				points.get(b).setY(y);
 				points.get(b).setX(x+i);
 				b++;
@@ -84,7 +81,7 @@ public class BlockT extends Block {
 		points.get(0).setY(y+1);
 		points.get(0).setX(x+1);
 		int b = 1;
-		for (int i = 0; i < BLOCK_LEN-1; i++) {
+		for (int i = 0; i < BLOCK_LENGTH-1; i++) {
 			points.get(b).setY(y+i);
 			points.get(b).setX(x);
 			b++;
@@ -96,7 +93,7 @@ public class BlockT extends Block {
 			points.get(0).setY(y+1);
 			points.get(0).setX(x);
 			int b = 1;
-			for (int i = 0; i < BLOCK_LEN-1; i++) {
+			for (int i = 0; i < BLOCK_LENGTH-1; i++) {
 				points.get(b).setY(y);
 				points.get(b).setX(i);
 				b++;
@@ -105,7 +102,7 @@ public class BlockT extends Block {
 			points.get(0).setY(y+1);
 			points.get(0).setX(x-1);
 			int b = 1;
-			for (int i = 0; i < BLOCK_LEN-1; i++) {
+			for (int i = 0; i < BLOCK_LENGTH-1; i++) {
 				points.get(b).setY(y);
 				points.get(b).setX(x-2+i);
 				b++;
@@ -117,7 +114,7 @@ public class BlockT extends Block {
 		points.get(0).setY(y-1);
 		points.get(0).setX(x-1);
 		int b = 1;
-		for (int i = 0; i < BLOCK_LEN-1; i++) {
+		for (int i = 0; i < BLOCK_LENGTH-1; i++) {
 			points.get(b).setY(y-2+i);
 			points.get(b).setX(x);
 			b++;

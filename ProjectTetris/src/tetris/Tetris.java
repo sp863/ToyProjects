@@ -1,123 +1,17 @@
 package tetris;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Random;
-import java.util.Scanner;
-import java.util.Set;
+import static utils.Constant.*;
 
 public class Tetris {
-	private static Tetris instance = new Tetris();
 	
-	public static Tetris getInstance() {
-		return instance;
-	}
-
-	Scanner scan = new Scanner(System.in);
-	Random ran = new Random();
-	
-	final static int V_MAX = 14;
-	final static int H_MAX = 10;
-	final static int V_SMAX = 4;
-	final static int H_SMAX = 10;
-	
-	static int[][] map = new int[V_MAX][H_MAX];
-	static int score = 0;
-	
-	boolean isLoaded = false;
-	
-	public void showMainMenu() {
-		System.out.println("=====TETRIS=====");
-		System.out.println("1. Play New Game");
-		System.out.println("2. Load Game");
-		System.out.println("0. Exit");
-		System.out.println("================");
-	}
-	
-	public void showPlayerControl() {
-		System.out.println("=======================================");
-		System.out.printf("[SCORE - %d]\n", score);
-		System.out.println("1. Move LEFT");
-		System.out.println("2. Move RIGHT");
-		System.out.println("3. Rotate");
-		System.out.println("4. Drop");
-		System.out.println("5. Save Game");
-		System.out.println("0. Exit");
-		System.out.println("=======================================");
-	}
-	
-	public void addBlockSpace(ArrayList<Point> points) {
-		for (Point p : points) {
-			int y = p.getY();
-			int x = p.getX();
-			map[y][x] = 1;
-		}
-	}
-	public void removeBlockSpace(ArrayList<Point> points) {
-		for (Point p : points) {
-			int y = p.getY();
-			int x = p.getX();
-			map[y][x] = 0;
-		}
-	}
-	
-	public void showSpace(ArrayList<Point> points) {
-		addBlockSpace(points);
-		System.out.println("=======================================");
-		for (int i = 0; i < V_SMAX; i++) {
-			for (int j = 0; j < H_SMAX; j++) {
-				System.out.printf("%d ", map[i][j]);
-			}
-			System.out.println();
-		}
-		System.out.println("=======================================");
-		removeBlockSpace(points);
-	}
-	public void showMap() {
-		for (int i = V_MAX-10; i < V_MAX; i++) {
-			for (int j = 0; j < H_MAX; j++) {
-				System.out.printf("%d ", map[i][j]);
-			}
-			System.out.println();
-		}
-	}
-	
-	public void showGamePlayMenu(ArrayList<Point> p) {
-		showSpace(p);
-		showMap();
-		showPlayerControl();
-	}
-	
-	public void adjustMap(int x) {
-		for (int i = x; i > V_MAX-10; i--) {
-			for (int j = 0; j < H_MAX; j++) {
-				map[i][j] = map[i-1][j];
-			}
-		}
-		for (int i = 0; i < H_MAX; i++) {
-			map[V_MAX-10][i] = 0;
-		}
-	}
-	
-	public void checkFilled() {
-		for (int i = V_MAX-10; i < V_MAX; i++) {
-			int cnt = 0;
-			for (int j = 0; j < H_MAX; j++) {
-				if (map[i][j] == 1) {
-					cnt++;
-				}
-			}
-			if (cnt == 10) {
-				adjustMap(i);
-			}
-		}
-	}
+	public static int[][] map;
+	public static int score = INITIAL_SCORE;
 	
 	public int getScore() {
 		int score = 0;
-		for (int i = V_MAX-10; i < V_MAX; i++) {
+		for (int i = MAX_VERTICAL_LENGTH-10; i < MAX_VERTICAL_LENGTH; i++) {
 			int cnt = 0;
-			for (int j = 0; j < H_MAX; j++) {
+			for (int j = 0; j < MAX_HORIZONTAL_LENGTH; j++) {
 				if (map[i][j] == 1) {
 					cnt++;
 				}
@@ -128,132 +22,38 @@ public class Tetris {
 		}
 		return score;
 	}
+	
 	public void getTotalScore() {
 		if (getScore() == 1) {
 			score += getScore();
 		} else if (getScore() > 1) {
 			score = score+(getScore()*getScore());
-			System.out.println("*****!!COMBO!!***** X" + getScore());
+			System.out.println(GAME_COMBO_MESSAGE + getScore());
 		}
 	}
 	
-	public HashMap<Integer,Block> createBlockList() {
-		HashMap<Integer, Block> map = new HashMap<>();
-		map.put(1001, new BlockI());
-		map.put(1002, new BlockL());
-		map.put(1003, new BlockSquare());
-		map.put(1004, new BlockT());
-		map.put(1005, new BlockZ());
-		
-		return map;
-	}
-	
-	public Block generateBlock() {
-		HashMap<Integer, Block> temp = createBlockList();
-		int num = ran.nextInt(5)+1001;
-		Set<Integer> keys = temp.keySet();
-		
-		for (int key : keys) {
-			if (key == num) {
-				return temp.get(num);
-			}
-		}
-		return null;
-	}
-	public Block generateBlock(int blockType) {
-		HashMap<Integer, Block> temp = createBlockList();
-		int num = blockType;
-		Set<Integer> keys = temp.keySet();
-		
-		for (int key : keys) {
-			if (key == num) {
-				return temp.get(num);
-			}
-		}
-		return null;
-	}
-	
-	public boolean checkGameOver(ArrayList<Point> points) {
-		for (int i = 0; i < points.size(); i++) {
-			int y = points.get(i).getY();
-			int x = points.get(i).getX();
-			if (y < V_SMAX) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	public boolean playGame(Block b, ArrayList<Point> points) {
-		while (true) {
-			showGamePlayMenu(points);
-			int choose = scan.nextInt();
-			//이상한숫자를 입력할수도 있으니 예외처리 필요?
-			if (choose == Button.BUTTON_ONE.ordinal()) {
-				b.moveBlock(choose);
-			} else if (choose == Button.BUTTON_TWO.ordinal()) {
-				b.moveBlock(choose);
-			} else if (choose == Button.BUTTON_THREE.ordinal()) {
-				b.rotateBlock();
-			} else if (choose == Button.BUTTON_FOUR.ordinal()) {
-				b.dropBlock();
-				if (checkGameOver(points)) {
-					System.out.println("[Message] GAME OVER!");
-					System.out.println();
-					return true;
-				}
-				getTotalScore();
-				checkFilled();
-				return false;
-			} else if (choose == Button.BUTTON_FIVE.ordinal()) {
-				FileManager.instance.saveGameMap();
-				FileManager.instance.saveGameBlock(b, points);
-			} else if (choose == Button.BUTTON_ZERO.ordinal()) {
-				return true;
-			}
-		}
-	}
-	
-	public void startNewGame() {
-		while (true) {
-			Block b = generateBlock();
-			ArrayList<Point> points = b.getPoints();
-			if (playGame(b,points)) {
-				return;
-			}
-		}
-	}
-	
-	public void startLoadGame() {
-		if (FileManager.instance.loadGameMap()) {
-			while (true) {
-				Block b = null;
-				if (isLoaded == false) {
-					b = FileManager.instance.loadGameBlock();
-					isLoaded = true;
-				} else {
-					b = generateBlock();
-				}
-				ArrayList<Point> points = b.getPoints();
-				if (playGame(b,points)) {
-					return;
+	public void checkFilled() {
+		for (int i = MAX_VERTICAL_LENGTH-10; i < MAX_VERTICAL_LENGTH; i++) {
+			int cnt = 0;
+			for (int j = 0; j < MAX_HORIZONTAL_LENGTH; j++) {
+				if (map[i][j] == 1) {
+					cnt++;
 				}
 			}
+			if (cnt == 10) {
+				adjustMap(i);
+			}
 		}
 	}
 	
-	public void runGame() {
-		while (true) {
-			showMainMenu();
-			int choose = scan.nextInt();
-			if (choose == Button.BUTTON_ONE.ordinal()) {
-				startNewGame();
-			} else if (choose == Button.BUTTON_TWO.ordinal()) {
-				startLoadGame();
-			} else if (choose == Button.BUTTON_ZERO.ordinal()) {
-				System.out.println("[Message] Thank you for Playing!");
-				break;
+	public void adjustMap(int x) {
+		for (int i = x; i > MAX_VERTICAL_LENGTH-10; i--) {
+			for (int j = 0; j < MAX_HORIZONTAL_LENGTH; j++) {
+				map[i][j] = Tetris.map[i-1][j];
 			}
+		}
+		for (int i = 0; i < MAX_HORIZONTAL_LENGTH; i++) {
+			map[MAX_VERTICAL_LENGTH-10][i] = 0;
 		}
 	}
 }

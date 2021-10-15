@@ -1,17 +1,20 @@
-package tetris;
+package block;
 
 import java.util.ArrayList;
 import java.util.Random;
+import tetris.Point;
+import static utils.Constant.*;
 
 public class BlockZ extends Block {
 	private int dir = 1;
 	
 	public BlockZ () {
-		super.blockNum = 1005;
+		blockNum = BLOCK_Z;
 		super.blockName = "Z";
 		setPoints();
 	}
 	
+	@Override
 	public int randomStart() {
 		Random ran = new Random();
 		int r = ran.nextInt(7)+1;
@@ -33,14 +36,6 @@ public class BlockZ extends Block {
 		super.points.add(p3);
 		super.points.add(p4);
 	}
-	
-	public boolean checkRotate(int y, int x) {
-		if (y < 0 || y > Tetris.V_MAX || x < 0 || x > Tetris.H_MAX) {
-			return false;
-		}
-		return true;
-	}
-
 	
 	@Override
 	public void rotateBlock() {
@@ -101,6 +96,4 @@ public class BlockZ extends Block {
 		points.get(3).setY(y+1);
 		points.get(3).setX(x+1);
 	}
-	
-
 }

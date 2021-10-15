@@ -1,22 +1,31 @@
-package tetris;
+package block;
 
 import java.util.ArrayList;
+import static utils.Constant.*;
+
+import tetris.Point;
+import tetris.Tetris;
 
 public abstract class Block {
-	final static int BLOCK_LEN = 4;
 	protected int blockNum;
 	protected String blockName;
 	protected ArrayList<Point> points;
 	
 	public abstract void setPoints();
 	public abstract void rotateBlock();
+	public abstract int randomStart();
 	
 	public ArrayList<Point> getPoints() {
 		return points;
 	}
+	
+	public int getBlockNum() {
+		return blockNum;
+	}
+	
 	// MOVE -------------------------------------------------------
 	public boolean checkMove(int x) {
-		if (x < 0 || x > Tetris.H_MAX-1) {
+		if (x < 0 || x > MAX_HORIZONTAL_LENGTH-1) {
 			return false;
 		}
 		return true;
@@ -64,21 +73,21 @@ public abstract class Block {
 	// DROP -------------------------------------------------------
 	public boolean checkDrop() {
 		int count = 0;
-		for (int i = 0; i < BLOCK_LEN; i++) {
+		for (int i = 0; i < BLOCK_LENGTH; i++) {
 			int y = points.get(i).getY()+1;
 			int x = points.get(i).getX();
-			if (y >= 0 && y < Tetris.V_MAX && Tetris.map[y][x] == 0) {
+			if (y >= 0 && y < MAX_VERTICAL_LENGTH && Tetris.map[y][x] == 0) {
 				count++;
 			}
 		}
-		if (count == BLOCK_LEN) {
+		if (count == BLOCK_LENGTH) {
 			return false;
 		}
 		return true;
 	}
 	
 	public void dropOneLine() {
-		for (int i = 0; i < BLOCK_LEN; i++) {
+		for (int i = 0; i < BLOCK_LENGTH; i++) {
 			int y = points.get(i).getY();
 			points.get(i).setY(y+1);
 		}
@@ -91,10 +100,18 @@ public abstract class Block {
 			}
 			dropOneLine();
 		}
-		for (int i = 0; i < BLOCK_LEN; i++) {
+		for (int i = 0; i < BLOCK_LENGTH; i++) {
 			int y = points.get(i).getY();
 			int x = points.get(i).getX();
 			Tetris.map[y][x] = 1;
 		}
+	}
+	
+	// CHECK -------------------------------------------------------
+	public boolean checkRotate(int y, int x) {
+		if (y < 0 || y > MAX_VERTICAL_LENGTH || x < 0 || x > MAX_HORIZONTAL_LENGTH) {
+			return false;
+		}
+		return true;
 	}
 }
