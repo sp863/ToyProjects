@@ -4,6 +4,11 @@ public class Constant {
 	public final static int BOARD_LENGTH = 8;
 	public final static int UNIT_CODE_LENGTH = 2;
 	public final static int LOCATION_CODE_LENGTH = 2;
+	public final static int ROOK_DIRECTION_MAX = 4;
+	public final static int KNIGHT_DIRECTION_MAX = 8;
+	public final static int BISHOP_DIRECTION_MAX = 4;
+	public final static int QUEEN_DIRECTION_MAX = 8;
+	public final static int KING_DIRECTION_MAX = 8;
 	
 	public final static int BUTTON_ZERO = 0;
 	public final static int BUTTON_ONE = 1;
@@ -41,8 +46,7 @@ public class Constant {
 	
 	public final static String MAIN_MENU_EXIT_MESSAGE = "[Message] Thank you for playing!";
 	
-	public final static String GAME_MENU_HEADER = "===========================";
-	public final static String GAME_MENU_SEPARATOR = "===========================";
+	public final static String GAME_MENU_SEPARATOR = "===================================================================";
 	
 	public final static String PLAYER_WHITE_VICTORY = "[Message] Player White Wins!";
 	public final static String PLAYER_BLACK_VICTORY = "[Message] Player Black Wins!";

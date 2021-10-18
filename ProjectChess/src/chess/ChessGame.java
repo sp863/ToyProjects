@@ -14,17 +14,32 @@ import utils.Validator;
 
 
 public class ChessGame {
-	public static String[][] chessBoard;
-	private PlayerWhite playerWhite;
-	private PlayerBlack playerBlack;
+	public static Unit[][] chessBoard;
+	private static PlayerWhite playerWhite;
+	private static PlayerBlack playerBlack;
 	private Scanner scanner;
 	
 
 	public ChessGame(Scanner scanner) {
-		chessBoard = new String[BOARD_LENGTH][BOARD_LENGTH];
+		chessBoard = new Unit[BOARD_LENGTH][BOARD_LENGTH];
 		playerWhite = new PlayerWhite();
 		playerBlack = new PlayerBlack();
+		playerWhite.playerInit(playerBlack);
+		playerBlack.playerInit(playerWhite);
+		chessBoardInit(playerWhite);
+		chessBoardInit(playerBlack);
 		this.scanner = scanner;
+	}
+	
+	public void chessBoardInit(Player player) {
+		HashMap<String, Unit> unitAliveList = player.getAliveUnitList();
+		Set<String> unitKeyList = unitAliveList.keySet();
+		
+		for (String unitKey : unitKeyList) {
+			int y = unitAliveList.get(unitKey).unitLocationPoint.getY();
+			int x = unitAliveList.get(unitKey).unitLocationPoint.getX();
+			chessBoard[y][x] = unitAliveList.get(unitKey);
+		}
 	}
 	
 	
@@ -35,43 +50,7 @@ public class ChessGame {
 	public boolean checkMatePlayerWhite() {
 		return false;
 	}
-	
-	
-	public void playerWhiteMove() {
-		//check illegal argument exception
-		OutputView.showChessBoardPlayer1();
-		while (true) {
-			String chooseUnit = scanner.next();
-			OutputView.showChooseUnitMessage();
-			if (Validator.isValidUnit(chooseUnit, playerWhite)) {
-				OutputView.showChooseLocationMessage();
-				String chooseNextMove = scanner.next();
-				if (Validator.isValidLocation(chooseNextMove)) {
-					Unit unit = getAliveUnit(chooseUnit, playerWhite);
-					
-					int y = BOARD_LENGTH-(Integer.parseInt(String.valueOf(chooseNextMove.charAt(1))));
-					int x = chooseNextMove.charAt(0)-'a';
-					if (unit.checkMove(y, x)) {
-						
-					}
-				}
-			}
-		}
-	}
-	
-	public void playerBlackMove() {
-		//check illegal argument exception
-		OutputView.showChessBoardPlayer2();
-		String chooseUnit = scanner.next();
-		String chooseNextMove = scanner.next();
-		
-	}
-	
-	public Unit getAliveUnit(String unitCode, Player player) {
-		HashMap<String, Unit> aliveList = player.getAliveUnitList();
-		return aliveList.get(unitCode);
-	}
-	
+
 	public PlayerWhite getPlayerWhite() {
 		return playerWhite;
 	}

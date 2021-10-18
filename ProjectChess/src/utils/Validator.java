@@ -5,48 +5,49 @@ import static utils.Constant.*;
 import java.util.HashMap;
 import java.util.Set;
 
+import chess.ChessGame;
 import chess.Unit;
 import player.Player;
 
 public class Validator {
 	
-	public static boolean isValidUnit(String unit, Player player) {
-		checkUnitLength(unit);
-		checkUnitForm(unit);
-		checkUnitUpperCase(unit);
-		checkUnitRange(unit);
-		checkUnitAlive(unit, player);
+	public static boolean isValidUnit(String unitCode, Player player) {
+		checkUnitLength(unitCode);
+		checkUnitForm(unitCode);
+		checkUnitUpperCase(unitCode);
+		checkUnitRange(unitCode);
+		checkUnitAlive(unitCode, player);
 		return true;
 	}
 	
-	public static void checkUnitLength(String unit) {
-		if (unit.length() != UNIT_CODE_LENGTH) {
+	public static void checkUnitLength(String unitCode) {
+		if (unitCode.length() != UNIT_CODE_LENGTH) {
 			throw new IllegalArgumentException(ILLEGAL_ARGUMENT_EXCEPTION_INPUT_LENGTH);
 		}
 	}
 	
-	public static void checkUnitForm(String unit) {
+	public static void checkUnitForm(String unitCode) {
 		//check for errors in this method*** checking if the first character is a character
 		try {
-			Character.isDigit(unit.charAt(0));
-			Integer.parseInt(String.valueOf(unit.charAt(1)));
+			Character.isDigit(unitCode.charAt(0));
+			Integer.parseInt(String.valueOf(unitCode.charAt(1)));
 		} catch (IllegalArgumentException e) {
 			throw new IllegalArgumentException(ILLEGAL_ARGUMENT_EXCEPTION_INPUT_FORM);
 		}
 	}
 	
-	public static void checkUnitUpperCase(String unit) {
-		char inputLetter = unit.charAt(0);
+	public static void checkUnitUpperCase(String unitCode) {
+		char inputLetter = unitCode.charAt(0);
 		if (Character.isLowerCase(inputLetter) == true) {
 			throw new IllegalArgumentException();
 		}
 	}
 
-	public static void checkUnitRange(String unit) {
+	public static void checkUnitRange(String unitCode) {
 		String[] possibleUnitCodes = {"K0","Q0","P1","P2","P3","P4","P5","P6","P7","P8","N1","N2","B1","B2","R1","R2"};
 		boolean isPossible = false;
 		for (int i = 0; i < possibleUnitCodes.length; i++) {
-			if (unit.equals(possibleUnitCodes[i])) {
+			if (unitCode.equals(possibleUnitCodes[i])) {
 				isPossible = true;
 			}
 		}
@@ -55,13 +56,13 @@ public class Validator {
 		}
 	}
 	
-	public static void checkUnitAlive(String unit, Player player) {
+	public static void checkUnitAlive(String unitCode, Player player) {
 		boolean isAlive = false;
 		HashMap<String,Unit> aliveList = player.getAliveUnitList();
 		Set<String> aliveListKeys = aliveList.keySet();
 		
 		for (String aliveUnit : aliveListKeys) {
-			if (aliveUnit.equals(unit)) {
+			if (aliveUnit.equals(unitCode)) {
 				isAlive = true;
 			}
 		}
@@ -114,4 +115,39 @@ public class Validator {
 			throw new IllegalArgumentException();
 		}
 	}
+
+	public static boolean isValidMove(int y, int x, Unit unit, Player player) {
+		checkMoveRange(y, x, unit);
+		checkMoveSameTeam(y, x, unit);
+		checkUnitMove(y, x, unit, player);
+		return true;
+	}
+	
+	public static void checkMoveRange(int y, int x, Unit unit) {
+		int currentY = unit.getUnitLocationPoint().getY();
+		int currentX = unit.getUnitLocationPoint().getX();
+		if (y < 0 || y >= BOARD_LENGTH || x < 0 || x >= BOARD_LENGTH) {
+			throw new IllegalArgumentException();
+		}
+		if (currentY == y && currentX == x) {
+			throw new IllegalArgumentException();
+		}
+	}
+	
+	public static void checkMoveSameTeam(int y, int x, Unit unit) {
+		Unit checkUnit = ChessGame.chessBoard[y][x];
+		if (checkUnit != null) {
+			if (checkUnit.getUnitColor().equals(unit.getUnitColor())) {
+				throw new IllegalArgumentException();
+			}
+		}
+	}
+	
+	public static void checkUnitMove(int y, int x, Unit unit, Player player) {
+		boolean checkMove = unit.checkUnitSpecificMove(y, x, player);
+		if (checkMove == false) {
+			throw new IllegalArgumentException();
+		}
+	}
+	
 }
