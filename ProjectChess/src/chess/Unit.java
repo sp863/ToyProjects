@@ -1,6 +1,8 @@
 package chess;
 
 import player.Player;
+import utils.OutputView;
+
 import static utils.Constant.*;
 
 public abstract class Unit {
@@ -11,6 +13,7 @@ public abstract class Unit {
 	protected boolean isDead = false;
 
 	public abstract boolean checkUnitSpecificMove(int y, int x, Player player);
+	public abstract boolean unitCheckKing(int y, int x);
 	
 	public boolean checkBoardRange(int y, int x) {
 		if (y < 0 || y >= BOARD_LENGTH || x < 0 || x >= BOARD_LENGTH) {
@@ -18,7 +21,7 @@ public abstract class Unit {
 		}
 		return true;
 	}
-
+	
 	public Player getMyOpponent() {
 		return myOpponent;
 	}

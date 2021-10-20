@@ -69,4 +69,40 @@ public class Queen extends Unit {
 		}
 		return true;
 	}
+
+	@Override
+	public boolean unitCheckKing(int y, int x) {
+		if (unitCheckKingRange(y, x) && unitCheckKingObstacle(y, x)) {
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean unitCheckKingRange(int y, int x) {
+		for (int i = 0; i < QUEEN_DIRECTION_MAX; i++) {
+			for (int j = 1; j < BOARD_LENGTH; j++) {
+				int tempY = y+(queenPossibleRange_dy[i]*j);
+				int tempX = x+(queenPossibleRange_dx[i]*j);
+				if (checkBoardRange(tempY, tempX)) {
+					if (ChessGame.chessBoard[tempY][tempX] == myOpponent.getAliveUnit(KING_NAME)) {
+						direction = i;
+						distanceToTarget = j;
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+	
+	public boolean unitCheckKingObstacle(int y, int x) {
+		for (int i = 1; i < distanceToTarget; i++) {
+			int tempY = y + (queenPossibleRange_dy[direction]*i);
+			int tempX = x + (queenPossibleRange_dx[direction]*i);
+			if (ChessGame.chessBoard[tempY][tempX] != null) {
+				return false;
+			}
+		}
+		return true;
+	}
 }

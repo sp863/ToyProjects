@@ -14,6 +14,8 @@ public class Constant {
 	public final static int BUTTON_ONE = 1;
 	public final static int BUTTON_TWO = 2;
 	
+	public final static int TURN_INITIAL_COUNT = 0;
+	
 	public final static String PLAYER_COLOR_BLACK = "Black";
 	public final static String PLAYER_COLOR_WHITE = "White";
 	
@@ -50,6 +52,8 @@ public class Constant {
 	
 	public final static String PLAYER_WHITE_VICTORY = "[Message] Player White Wins!";
 	public final static String PLAYER_BLACK_VICTORY = "[Message] Player Black Wins!";
+	public final static String PLAYER_WHITE_TURN = "[--------------- White Turn ---------------]";
+	public final static String PLAYER_BLACK_TURN = "[--------------- Black Turn ---------------]";
 	
 	public final static String ILLEGAL_ARGUMENT_EXCEPTION_INPUT_LENGTH = "[Message] Unit code should only have one letter and a number";
 	public final static String ILLEGAL_ARGUMENT_EXCEPTION_INPUT_FORM = "[Message] Unit code form should only be comprised of one letter + one number";
@@ -58,4 +62,10 @@ public class Constant {
 	
 	public final static String CHOOSE_UNIT_MESSAGE = "[Message] Choose a piece";
 	public final static String CHOOSE_LOCATION_MESSAGE = "[Message] Choose a tile";
+	public final static String CHOOSE_PAWN_PROMOTION_MESSAGE = "[Message] Choose a piece for promotion.";
+	
+	public final static String PLAYER_CHECK_OPPONENT_KING_MESSAGE = "[Message] !!!!!CHECK!!!!!";
+	
+	public final static String GAME_TURN_COUNT_HEADER = "* Turn : ";
+	
 }

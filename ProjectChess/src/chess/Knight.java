@@ -48,4 +48,18 @@ public class Knight extends Unit {
 		}
 		return true;
 	}
+
+	@Override
+	public boolean unitCheckKing(int y, int x) {
+		for (int i = 0; i < KNIGHT_DIRECTION_MAX; i++) {
+			int tempY = y + knightPossibleRange_dy[i];
+			int tempX = x + knightPossibleRange_dx[i];
+			if (checkBoardRange(tempY, tempX)) {
+				if (ChessGame.chessBoard[tempY][tempX] == myOpponent.getAliveUnit(KING_NAME)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 }

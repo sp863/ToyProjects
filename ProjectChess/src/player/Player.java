@@ -23,6 +23,10 @@ public abstract class Player {
 	public String getPlayerColor() {
 		return playerColor;
 	}
+	
+	public Player getOpponentPlayer() {
+		return opponentPlayer;
+	}
 
 	public HashMap<String, Unit> getAliveUnitList() {
 		return aliveUnitList;
@@ -34,5 +38,9 @@ public abstract class Player {
 	
 	public Unit getAliveUnit(String unitCode) {
 		return aliveUnitList.get(unitCode);
+	}
+	
+	public Unit getTakenUnit(String unitCode) {
+		return takenUnitList.get(unitCode);
 	}
 }

@@ -15,9 +15,9 @@ public class Pawn extends Unit {
 
 	@Override
 	public boolean checkUnitSpecificMove(int y, int x, Player player) {
-		if (super.unitColor.equals("White")) {
+		if (super.unitColor.equals(PLAYER_COLOR_WHITE)) {
 			return checkWhitePawnMove(y, x, player);
-		} else if (super.unitColor.equals("Black")) {
+		} else if (super.unitColor.equals(PLAYER_COLOR_BLACK)) {
 			return checkBlackPawnMove(y, x, player);
 		}
 		return false;
@@ -42,9 +42,19 @@ public class Pawn extends Unit {
 	}
 	
 	public boolean checkBlackPawnMove(int y, int x, Player player) {
-		if (checkBlackPawnMoveRange(y, x) && checkBlackPawnObstacle(y, x) && checkTakePiece(y, x, player)) {
-			isMoved = true;
-			return true;
+		boolean conditionA = checkBlackPawnMoveRange(y,x);
+		boolean conditionB = checkBlackPawnDiagonalMove(y,x);
+		if (conditionA || conditionB) {
+			if (conditionA) {
+				if (checkBlackPawnObstacle(y, x) && checkTakePiece(y, x, player)) {
+					isMoved = true;
+					return true;
+				}
+			} else if (conditionB) {
+				checkTakePiece(y, x, player);
+				isMoved = true;
+				return true;
+			}
 		}
 		return false;
 	}
@@ -112,8 +122,10 @@ public class Pawn extends Unit {
 		for (int i = 0; i < 2; i++) {
 			int tempY = dy[i]+currentY;
 			int tempX = dx[i]+currentX;
-			if (ChessGame.chessBoard[tempY][tempX] != null && tempY == y && tempX == x) {
-				return true;
+			if (checkBoardRange(tempY, tempX)) {
+				if (ChessGame.chessBoard[tempY][tempX] != null && tempY == y && tempX == x) {
+					return true;
+				}
 			}
 		}
 		return false;
@@ -153,4 +165,56 @@ public class Pawn extends Unit {
 		return true;
 	}
 	
+	
+	@Override
+	public boolean unitCheckKing(int y, int x) {
+		if (super.unitColor.equals(PLAYER_COLOR_BLACK)) {
+			blackPawnCheckKing(y, x);
+		} else if (super.unitColor.equals(PLAYER_COLOR_WHITE)) {
+			whitePawnCheckKing(y, x);
+		}
+		return false;
+	}
+	
+	public boolean whitePawnCheckKing(int y, int x) {
+		int[] pawnRange_dy = {-2,-1,-1,-1};
+		int[] pawnRange_dx = {0,-1,0,-1};
+		int start = 0;
+		if (isMoved == false) {
+			start = 0;
+		} else if (isMoved == true) {
+			start = 1;
+		}
+		for (int i = start; i < 4; i++) {
+			int tempY = y + pawnRange_dy[i];
+			int tempX = x + pawnRange_dx[i];
+			if (checkBoardRange(tempY,tempX)) {
+				if (ChessGame.chessBoard[tempY][tempX] == myOpponent.getAliveUnit(KING_NAME)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	public boolean blackPawnCheckKing(int y, int x) {
+		int[] pawnRange_dy = {2,1,1,1};
+		int[] pawnRange_dx = {0,-1,0,-1};
+		int start = 0;
+		if (isMoved == false) {
+			start = 0;
+		} else if (isMoved == true) {
+			start = 1;
+		}
+		for (int i = start; i < 4; i++) {
+			int tempY = y + pawnRange_dy[i];
+			int tempX = x + pawnRange_dx[i];
+			if (checkBoardRange(tempY,tempX)) {
+				if (ChessGame.chessBoard[tempY][tempX] == myOpponent.getAliveUnit(KING_NAME)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 }

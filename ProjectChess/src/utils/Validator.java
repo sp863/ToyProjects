@@ -20,9 +20,18 @@ public class Validator {
 		return true;
 	}
 	
+	public static boolean isValidTakenUnit(String unitCode, Player player) {
+		checkUnitLength(unitCode);
+		checkUnitForm(unitCode);
+		checkUnitUpperCase(unitCode);
+		checkTakenUnitRange(unitCode);
+		checkUnitTaken(unitCode, player);
+		return true;
+	}
+	
 	public static void checkUnitLength(String unitCode) {
 		if (unitCode.length() != UNIT_CODE_LENGTH) {
-			throw new IllegalArgumentException(ILLEGAL_ARGUMENT_EXCEPTION_INPUT_LENGTH);
+			throw new IllegalArgumentException();
 		}
 	}
 	
@@ -32,7 +41,7 @@ public class Validator {
 			Character.isDigit(unitCode.charAt(0));
 			Integer.parseInt(String.valueOf(unitCode.charAt(1)));
 		} catch (IllegalArgumentException e) {
-			throw new IllegalArgumentException(ILLEGAL_ARGUMENT_EXCEPTION_INPUT_FORM);
+			throw new IllegalArgumentException();
 		}
 	}
 	
@@ -55,22 +64,32 @@ public class Validator {
 			throw new IllegalArgumentException();
 		}
 	}
-	
-	public static void checkUnitAlive(String unitCode, Player player) {
-		boolean isAlive = false;
-		HashMap<String,Unit> aliveList = player.getAliveUnitList();
-		Set<String> aliveListKeys = aliveList.keySet();
-		
-		for (String aliveUnit : aliveListKeys) {
-			if (aliveUnit.equals(unitCode)) {
-				isAlive = true;
+	public static void checkTakenUnitRange(String unitCode) {
+		String[] possibleUnitCodes = {"Q0","N1","N2","B1","B2","R1","R2"};
+		boolean isPossible = false;
+		for (int i = 0; i < possibleUnitCodes.length; i++) {
+			if (unitCode.equals(possibleUnitCodes[i])) {
+				isPossible = true;
 			}
 		}
-		if (isAlive == false) {
+		if (isPossible == false) {
 			throw new IllegalArgumentException();
 		}
 	}
-
+	
+	public static void checkUnitAlive(String unitCode, Player player) {
+		if (player.getAliveUnit(unitCode) == null) {
+			throw new IllegalArgumentException();
+		}
+	}
+	
+	public static void checkUnitTaken(String unitCode, Player player) {
+		if (player.getOpponentPlayer().getTakenUnit(unitCode) == null) {
+			throw new IllegalArgumentException();
+		}
+	}
+	
+	//valid location check -----------------------------------------------------------------------------------------------
 	public static boolean isValidLocation(String location) {
 		checkLocationLength(location);
 		checkLocationForm(location);
@@ -115,7 +134,8 @@ public class Validator {
 			throw new IllegalArgumentException();
 		}
 	}
-
+	
+	//valid move check -----------------------------------------------------------------------------------------------
 	public static boolean isValidMove(int y, int x, Unit unit, Player player) {
 		checkMoveRange(y, x, unit);
 		checkMoveSameTeam(y, x, unit);
