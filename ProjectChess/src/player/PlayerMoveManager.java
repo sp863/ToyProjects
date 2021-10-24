@@ -1,6 +1,8 @@
 package player;
 
 import static utils.Constant.*;
+
+import java.util.HashMap;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -50,8 +52,9 @@ public class PlayerMoveManager {
 							ChessGame.chessBoard[y][x] = null;
 							ChessGame.chessBoard[y][x] = unit;
 						}
-						player.isOpponentKingOnCheck();
-						if (player.getOpponentPlayer().isKingOnCheck) {
+						isOpponentKingOnCheck(player);
+						isPlayerKingOnCheck(player);
+						if (player.getOpponentPlayer().isKingOnCheck()) {
 							OutputView.showCheckKingMessage();
 						}
 						return;
@@ -59,6 +62,58 @@ public class PlayerMoveManager {
 				}
 			}
 		}
+	}
+	
+	public void isPlayerKingOnCheck(Player player) {
+		Player opponentPlayer = player.getOpponentPlayer();
+		Set<String> opponentKeyList = opponentPlayer.getAliveUnitList().keySet();
+		int checkCount = 0;
+		for (String key : opponentKeyList) {
+			Unit unit = opponentPlayer.getAliveUnit(key);
+			int currentUnitPositionY = unit.getUnitLocationPoint().getY();
+			int currentUnitPositionX = unit.getUnitLocationPoint().getX();
+			if (unit.unitCheckKing(currentUnitPositionY, currentUnitPositionX)) {
+				checkCount++;
+			}
+		}
+		if (checkCount > 0) {
+			player.setKingOnCheck(true);
+			return;
+		}
+		player.setKingOnCheck(false);
+	}
+	
+	public void isOpponentKingOnCheck(Player player) {
+		Set<String> aliveUnitKeyList = player.getAliveUnitList().keySet();
+		int checkCount = 0;
+		for (String key : aliveUnitKeyList) {
+			Unit unit = player.getAliveUnit(key);
+			int currentUnitPositionY = unit.getUnitLocationPoint().getY();
+			int currentUnitPositionX = unit.getUnitLocationPoint().getX();
+			if (unit.unitCheckKing(currentUnitPositionY, currentUnitPositionX)) {
+				checkCount++;
+			}
+		}
+		if (checkCount > 0) {
+			player.getOpponentPlayer().setKingOnCheck(true);
+			return;
+		}
+		player.getOpponentPlayer().setKingOnCheck(false);
+	}
+	
+	public static boolean isTileOnCheck(Player player, int y, int x) {
+		HashMap<String, Unit> opponentPlayerUnitList = player.getOpponentPlayer().getAliveUnitList();
+		Set<String> opponentKeyList = player.getOpponentPlayer().getAliveUnitList().keySet();
+		int checkCount = 0;
+		for (String key : opponentKeyList) {
+			if (opponentPlayerUnitList.get(key).unitCheckTile(y, x)) {
+				checkCount++;
+			}
+		}
+		if (checkCount > 0) {
+			return true;
+		}
+		return false;
 	}
 	
 	//pawn promotion -----------------------------------------------------------------------------------------------

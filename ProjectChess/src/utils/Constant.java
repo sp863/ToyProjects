@@ -70,7 +70,6 @@ public class Constant {
 	public final static String MAIN_MENU_SEPARATOR = "=================";
 	public final static String MAIN_MENU_PLAYGAME = "1. Play New Game";
 	public final static String MAIN_MENU_EXIT = "0. Exit";
-	
 	public final static String MAIN_MENU_EXIT_MESSAGE = "[Message] Thank you for playing!";
 	
 	public final static String GAME_MENU_SEPARATOR = "===================================================================";

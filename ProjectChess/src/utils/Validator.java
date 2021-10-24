@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 import chess.ChessGame;
 import chess.Unit;
 import player.Player;
+import player.PlayerMoveManager;
 
 public class Validator {
 	
@@ -293,7 +294,7 @@ public class Validator {
 	public static boolean isCastlingTileOnCheck(Player player, ArrayList<Integer> rangeY, ArrayList<Integer> rangeX) {
 		int checkCount = 0;
 		for (int i = 0; i < 2; i++) {
-			if (!player.isPlayerTileOnCheck(rangeY.get(i), rangeX.get(i))) {
+			if (!PlayerMoveManager.isTileOnCheck(player, rangeY.get(i), rangeX.get(i))) {
 				checkCount++;
 			}
 		}

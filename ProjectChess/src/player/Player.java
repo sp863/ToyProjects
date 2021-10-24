@@ -24,40 +24,6 @@ public abstract class Player {
 	public abstract void rookInit();
 	public abstract void pawnInit();
 	
-	
-	public void isOpponentKingOnCheck() {
-		Set<String> aliveUnitKeyList = this.aliveUnitList.keySet();
-		int checkCount = 0;
-		for (String key : aliveUnitKeyList) {
-			Unit unit = this.aliveUnitList.get(key);
-			int currentUnitPositionY = unit.getUnitLocationPoint().getY();
-			int currentUnitPositionX = unit.getUnitLocationPoint().getX();
-			if (unit.unitCheckKing(currentUnitPositionY, currentUnitPositionX)) {
-				checkCount++;
-			}
-		}
-		if (checkCount > 0) {
-			opponentPlayer.setKingOnCheck(true);
-			return;
-		}
-		opponentPlayer.setKingOnCheck(false);
-	}
-	
-	public boolean isPlayerTileOnCheck(int y, int x) {
-		HashMap<String, Unit> opponentPlayerUnitList = opponentPlayer.getAliveUnitList();
-		Set<String> opponentKeyList = opponentPlayer.getAliveUnitList().keySet();
-		int checkCount = 0;
-		for (String key : opponentKeyList) {
-			if (opponentPlayerUnitList.get(key).unitCheckTile(y, x)) {
-				checkCount++;
-			}
-		}
-		if (checkCount > 0) {
-			return true;
-		}
-		return false;
-	}
-	
 	public String getPlayerColor() {
 		return playerColor;
 	}

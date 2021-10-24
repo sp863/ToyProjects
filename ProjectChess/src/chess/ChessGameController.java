@@ -36,21 +36,21 @@ public class ChessGameController {
 	}
 	
 	public void playGame() {
-		chessGame = new ChessGame(scanner);
+		chessGame = new ChessGame();
 		playerMoveManager = new PlayerMoveManager(scanner);
 		while (true) {
 			Player playerWhite = chessGame.getPlayerWhite();
 			Player playerBlack = chessGame.getPlayerBlack();
 			OutputView.showWhitePlayGameMenu(playerWhite, playerBlack);
 			playerMoveManager.playerMove(playerWhite);
-			if (chessGame.isOpponentKingDead(playerBlack) || chessGame.isCheckMate(playerBlack)) {
-				OutputView.showVictoryMessage(PLAYER_WHITE_VICTORY);
+			if (chessGame.isCheckMate(playerWhite)) {
+				OutputView.showVictoryMessage(PLAYER_BLACK_VICTORY);
 				return;
 			}
 			OutputView.showBlackPlayGameMenu(playerWhite, playerBlack);
 			playerMoveManager.playerMove(playerBlack);
-			if (chessGame.isOpponentKingDead(playerWhite) || chessGame.isCheckMate(playerWhite)) {
-				OutputView.showVictoryMessage(PLAYER_BLACK_VICTORY);
+			if (chessGame.isCheckMate(playerBlack)) {
+				OutputView.showVictoryMessage(PLAYER_WHITE_VICTORY);
 				return;
 			}
 			turn++;
