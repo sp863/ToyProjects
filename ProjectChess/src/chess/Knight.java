@@ -4,8 +4,6 @@ import player.Player;
 import static utils.Constant.*;
 
 public class Knight extends Unit {
-	private int[]knightPossibleRange_dy = {-2,-2,-1,1,2,2,1,-1};
-	private int[]knightPossibleRange_dx = {-1,1,2,2,1,-1,-2,-2};
 	
 	public Knight (Player opponentPlayer, String code, String color, UnitLocationPoint unitLocationPoint) {
 		super.myOpponent = opponentPlayer;
@@ -23,13 +21,20 @@ public class Knight extends Unit {
 		return false;
 	}
 	
+	@Override
+	public boolean unitCheckTile(int y, int x) {
+		if (checkUnitMoveRange(y, x)) {
+			return true;
+		}
+		return false;
+	}
+	
 	public boolean checkUnitMoveRange(int y, int x) {
-		int currentY = super.unitLocationPoint.getY();
-		int currentX = super.unitLocationPoint.getX();
-		
+		int currentKnightY = super.unitLocationPoint.getY();
+		int currentKnightX = super.unitLocationPoint.getX();
 		for (int i = 0; i < KNIGHT_DIRECTION_MAX; i++) {
-			int tempY = currentY + knightPossibleRange_dy[i];
-			int tempX = currentX + knightPossibleRange_dx[i];
+			int tempY = currentKnightY + KNIGHT_MOVE_RANGE_DY[i];
+			int tempX = currentKnightX + KNIGHT_MOVE_RANGE_DX[i];
 			if (checkBoardRange(tempY, tempX)) {
 				if (tempY == y && tempX == x) {
 					return true;
@@ -52,8 +57,8 @@ public class Knight extends Unit {
 	@Override
 	public boolean unitCheckKing(int y, int x) {
 		for (int i = 0; i < KNIGHT_DIRECTION_MAX; i++) {
-			int tempY = y + knightPossibleRange_dy[i];
-			int tempX = x + knightPossibleRange_dx[i];
+			int tempY = y + KNIGHT_MOVE_RANGE_DY[i];
+			int tempX = x + KNIGHT_MOVE_RANGE_DX[i];
 			if (checkBoardRange(tempY, tempX)) {
 				if (ChessGame.chessBoard[tempY][tempX] == myOpponent.getAliveUnit(KING_NAME)) {
 					return true;

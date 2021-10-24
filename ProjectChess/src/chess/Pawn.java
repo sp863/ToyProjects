@@ -4,12 +4,12 @@ import player.Player;
 import static utils.Constant.*;
 
 public class Pawn extends Unit {
-	private boolean isMoved = false;
 
 	public Pawn (Player opponentPlayer, String code, String color, UnitLocationPoint unitLocationPoint) {
 		super.myOpponent = opponentPlayer;
 		super.unitCode = code;
 		super.unitColor = color;
+		super.isMoved = false;
 		super.unitLocationPoint = unitLocationPoint;
 	}
 
@@ -29,12 +29,12 @@ public class Pawn extends Unit {
 		if (conditionA || conditionB) {
 			if (conditionA) {
 				if (checkWhitePawnObstacle(y, x) && checkTakePiece(y, x, player)) {
-					isMoved = true;
+					super.isMoved = true;
 					return true;
 				}
 			} else if (conditionB) {
 				checkTakePiece(y, x, player);
-				isMoved = true;
+				super.isMoved = true;
 				return true;
 			}
 		}
@@ -47,12 +47,12 @@ public class Pawn extends Unit {
 		if (conditionA || conditionB) {
 			if (conditionA) {
 				if (checkBlackPawnObstacle(y, x) && checkTakePiece(y, x, player)) {
-					isMoved = true;
+					super.isMoved = true;
 					return true;
 				}
 			} else if (conditionB) {
 				checkTakePiece(y, x, player);
-				isMoved = true;
+				super.isMoved = true;
 				return true;
 			}
 		}
@@ -60,34 +60,17 @@ public class Pawn extends Unit {
 	}
 	
 	public boolean checkWhitePawnMoveRange(int y, int x) {
-		int currentY = super.unitLocationPoint.getY();
-		int currentX = super.unitLocationPoint.getX();
-		if (currentY > 0) {
-			if (isMoved == false) {
-				for (int i = currentY-1; i >= currentY-2; i--) {
-					if (i == y && currentX == x) {
+		int currentPawnY = super.unitLocationPoint.getY();
+		int currentPawnX = super.unitLocationPoint.getX();
+		if (currentPawnY > 0) {
+			if (super.isMoved == false) {
+				for (int i = currentPawnY-1; i >= currentPawnY-2; i--) {
+					if (i == y && currentPawnX == x) {
 						return true;
 					}
 				}
 			} else {
-				if (currentY-1 == y && currentX == x) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-	
-	public boolean checkWhitePawnDiagonalMove(int y, int x) {
-		int currentY = super.unitLocationPoint.getY();
-		int currentX = super.unitLocationPoint.getX();
-		int[] dy = {-1, -1};
-		int[] dx = {-1, 1};
-		for (int i = 0; i < 2; i++) {
-			int tempY = dy[i]+currentY;
-			int tempX = dx[i]+currentX;
-			if (checkBoardRange(tempY, tempX)) {
-				if (ChessGame.chessBoard[tempY][tempX] != null && tempY == y && tempX == x) {
+				if (currentPawnY-1 == y && currentPawnX == x) {
 					return true;
 				}
 			}
@@ -96,17 +79,34 @@ public class Pawn extends Unit {
 	}
 	
 	public boolean checkBlackPawnMoveRange(int y, int x) {
-		int currentY = super.unitLocationPoint.getY();
-		int currentX = super.unitLocationPoint.getX();
-		if (currentY < BOARD_LENGTH-1) {
-			if (isMoved == false) {
-				for (int i = currentY+1; i <= currentY+2; i++) {
-					if (i == y && currentX == x) {
+		int currentPawnY = super.unitLocationPoint.getY();
+		int currentPawnX = super.unitLocationPoint.getX();
+		if (currentPawnY < BOARD_LENGTH-1) {
+			if (super.isMoved == false) {
+				for (int i = currentPawnY+1; i <= currentPawnY+2; i++) {
+					if (i == y && currentPawnX == x) {
 						return true;
 					}
 				}
 			} else {
-				if (currentY+1 == y && currentX == x) {
+				if (currentPawnY+1 == y && currentPawnX == x) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	public boolean checkWhitePawnDiagonalMove(int y, int x) {
+		int currentPawnY = super.unitLocationPoint.getY();
+		int currentPawnX = super.unitLocationPoint.getX();
+		int[] dy = {-1, -1};
+		int[] dx = {-1, 1};
+		for (int i = 0; i < 2; i++) {
+			int tempY = dy[i]+currentPawnY;
+			int tempX = dx[i]+currentPawnX;
+			if (checkBoardRange(tempY, tempX)) {
+				if (ChessGame.chessBoard[tempY][tempX] != null && tempY == y && tempX == x) {
 					return true;
 				}
 			}
@@ -115,13 +115,13 @@ public class Pawn extends Unit {
 	}
 
 	public boolean checkBlackPawnDiagonalMove(int y, int x) {
-		int currentY = super.unitLocationPoint.getY();
-		int currentX = super.unitLocationPoint.getX();
+		int currentPawnY = super.unitLocationPoint.getY();
+		int currentPawnX = super.unitLocationPoint.getX();
 		int[] dy = {1, 1};
 		int[] dx = {-1, 1};
 		for (int i = 0; i < 2; i++) {
-			int tempY = dy[i]+currentY;
-			int tempX = dx[i]+currentX;
+			int tempY = dy[i]+currentPawnY;
+			int tempX = dx[i]+currentPawnX;
 			if (checkBoardRange(tempY, tempX)) {
 				if (ChessGame.chessBoard[tempY][tempX] != null && tempY == y && tempX == x) {
 					return true;
@@ -132,11 +132,10 @@ public class Pawn extends Unit {
 	}
 	
 	public boolean checkWhitePawnObstacle(int y, int x) {
-		int currentY = super.unitLocationPoint.getY();
-		int currentX = super.unitLocationPoint.getX();
-		
-		for (int i = currentY-1; i > y; i--) {
-			if (ChessGame.chessBoard[i][currentX] != null) {
+		int currentPawnY = super.unitLocationPoint.getY();
+		int currentPawnX = super.unitLocationPoint.getX();
+		for (int i = currentPawnY-1; i > y; i--) {
+			if (ChessGame.chessBoard[i][currentPawnX] != null) {
 				return false;
 			}
 		}
@@ -144,11 +143,10 @@ public class Pawn extends Unit {
 	}
 	
 	public boolean checkBlackPawnObstacle(int y, int x) {
-		int currentY = super.unitLocationPoint.getY();
-		int currentX = super.unitLocationPoint.getX();
-		
-		for (int i = currentY+1; i < y; i++) {
-			if (ChessGame.chessBoard[i][currentX] != null) {
+		int currentPawnY = super.unitLocationPoint.getY();
+		int currentPawnX = super.unitLocationPoint.getX();
+		for (int i = currentPawnY+1; i < y; i++) {
+			if (ChessGame.chessBoard[i][currentPawnX] != null) {
 				return false;
 			}
 		}
@@ -177,17 +175,15 @@ public class Pawn extends Unit {
 	}
 	
 	public boolean whitePawnCheckKing(int y, int x) {
-		int[] pawnRange_dy = {-2,-1,-1,-1};
-		int[] pawnRange_dx = {0,-1,0,-1};
 		int start = 0;
-		if (isMoved == false) {
+		if (super.isMoved == false) {
 			start = 0;
-		} else if (isMoved == true) {
+		} else if (super.isMoved == true) {
 			start = 1;
 		}
 		for (int i = start; i < 4; i++) {
-			int tempY = y + pawnRange_dy[i];
-			int tempX = x + pawnRange_dx[i];
+			int tempY = y + WHITE_PAWN_RANGE_DY[i];
+			int tempX = x + WHITE_PAWN_RANGE_DX[i];
 			if (checkBoardRange(tempY,tempX)) {
 				if (ChessGame.chessBoard[tempY][tempX] == myOpponent.getAliveUnit(KING_NAME)) {
 					return true;
@@ -198,19 +194,69 @@ public class Pawn extends Unit {
 	}
 	
 	public boolean blackPawnCheckKing(int y, int x) {
-		int[] pawnRange_dy = {2,1,1,1};
-		int[] pawnRange_dx = {0,-1,0,-1};
 		int start = 0;
-		if (isMoved == false) {
+		if (super.isMoved == false) {
 			start = 0;
-		} else if (isMoved == true) {
+		} else if (super.isMoved == true) {
 			start = 1;
 		}
 		for (int i = start; i < 4; i++) {
-			int tempY = y + pawnRange_dy[i];
-			int tempX = x + pawnRange_dx[i];
+			int tempY = y + BLACK_PAWN_RANGE_DY[i];
+			int tempX = x + BLACK_PAWN_RANGE_DX[i];
 			if (checkBoardRange(tempY,tempX)) {
 				if (ChessGame.chessBoard[tempY][tempX] == myOpponent.getAliveUnit(KING_NAME)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public boolean unitCheckTile(int y, int x) {
+		if (super.unitColor.equals(PLAYER_COLOR_BLACK)) {
+			blackPawnCheckTile(y, x);
+		} else if (super.unitColor.equals(PLAYER_COLOR_WHITE)) {
+			whitePawnCheckTile(y, x);
+		}
+		return false;
+	}
+	
+	public boolean whitePawnCheckTile(int y, int x) {
+		int currentPawnY = super.unitLocationPoint.getY();
+		int currentPawnX = super.unitLocationPoint.getX();
+		int start = 0;
+		if (super.isMoved == false) {
+			start = 0;
+		} else if (super.isMoved == true) {
+			start = 1;
+		}
+		for (int i = start; i < PAWN_DIRECTION_MAX; i++) {
+			int tempY = currentPawnY + WHITE_PAWN_RANGE_DY[i];
+			int tempX = currentPawnX + WHITE_PAWN_RANGE_DX[i];
+			if (checkBoardRange(tempY,tempX)) {
+				if (tempY == y && tempX == x) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	public boolean blackPawnCheckTile(int y, int x) {
+		int currentPawnY = super.unitLocationPoint.getY();
+		int currentPawnX = super.unitLocationPoint.getX();
+		int start = 0;
+		if (super.isMoved == false) {
+			start = 0;
+		} else if (super.isMoved == true) {
+			start = 1;
+		}
+		for (int i = start; i < PAWN_DIRECTION_MAX; i++) {
+			int tempY = currentPawnY + BLACK_PAWN_RANGE_DY[i];
+			int tempX = currentPawnX + BLACK_PAWN_RANGE_DX[i];
+			if (checkBoardRange(tempY,tempX)) {
+				if (tempY == y && tempX == x) {
 					return true;
 				}
 			}

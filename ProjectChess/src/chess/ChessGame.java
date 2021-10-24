@@ -42,12 +42,34 @@ public class ChessGame {
 		}
 	}
 	
-	
-	public boolean checkMatePlayerBlack() {
+	public boolean isCheckMate(Player opponentPlayer) {
+		Unit opponentKing = opponentPlayer.getAliveUnit(KING_NAME);
+		int currentKingY = opponentKing.getUnitLocationPoint().getY();
+		int currentKingX = opponentKing.getUnitLocationPoint().getX();
+		
+		int checkCount = 0;
+		int availableTiles = 0;
+		for (int i = 0; i < KING_DIRECTION_MAX; i++) {
+			int y = currentKingY + KING_MOVE_RANGE_DY[i];
+			int x = currentKingX + KING_MOVE_RANGE_DX[i];
+			if (opponentKing.checkBoardRange(y, x)) {
+				availableTiles++;
+				if (opponentPlayer.isPlayerTileOnCheck(y, x)) {
+					checkCount++;
+				}
+			}
+		}
+		if (checkCount == availableTiles) {
+			return true;
+		}
 		return false;
 	}
 	
-	public boolean checkMatePlayerWhite() {
+	public boolean isOpponentKingDead (Player opponentPlayer) {
+		Unit opponentKing = opponentPlayer.getAliveUnit(KING_NAME);
+		if (opponentKing == null) {
+			return true;
+		}
 		return false;
 	}
 

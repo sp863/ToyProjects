@@ -14,9 +14,26 @@ public class OutputView {
 	public static void showMainMenu() {
 		System.out.println(MAIN_MENU_HEADER);
 		System.out.println(MAIN_MENU_PLAYGAME);
-		System.out.println(MAIN_MENU_LOADGAME);
 		System.out.println(MAIN_MENU_EXIT);
 		System.out.println(MAIN_MENU_SEPARATOR);
+	}
+	
+	public static void showWhitePlayGameMenu(Player playerWhite, Player playerBlack) {
+		showTurnCount();
+		showWhiteTurnHeader();
+		showTakenList(playerWhite, playerBlack);
+		showGameSeparator();
+		showChessBoardPlayer1();
+		showGameSeparator();
+	}
+
+	public static void showBlackPlayGameMenu(Player playerWhite, Player playerBlack) {
+		showTurnCount();
+		showBlackTurnHeader();
+		showTakenList(playerWhite, playerBlack);
+		showGameSeparator();
+		showChessBoardPlayer2();
+		showGameSeparator();
 	}
 	
 	public static void showGameSeparator() {
@@ -91,9 +108,12 @@ public class OutputView {
 		System.out.println();
 	}
 	
-	public static void showTakenList(Player player) {
-		Set<String> unitKeyList = player.getTakenUnitList().keySet();
-		System.out.println("* " + player.getPlayerColor() + " Player's Pieces Taken : " + unitKeyList);
+	public static void showTakenList(Player playerWhite, Player playerBlack) {
+		Set<String> unitKeyList = playerWhite.getTakenUnitList().keySet();
+		System.out.println("* " + playerWhite.getPlayerColor() + " Player's Pieces Taken : " + unitKeyList);
+
+		unitKeyList = playerBlack.getTakenUnitList().keySet();
+		System.out.println("* " + playerBlack.getPlayerColor() + " Player's Pieces Taken : " + unitKeyList);
 	}
 	
 	public static void showWhiteTurnHeader() {
@@ -111,6 +131,13 @@ public class OutputView {
 	
 	public static void showChoosePawnPromotionMessage() {
 		System.out.println(CHOOSE_PAWN_PROMOTION_MESSAGE);
+	}
+	
+	public static void showChooseCastlingMessage() {
+		System.out.println(CHOOSE_DO_OR_NOT_DO_CASTLING_MESSAGE);
+	}
+	public static void showChooseCastlingSideMessage() {
+		System.out.println(CHOOSE_CASTLING_SIDE_MESSAGE);
 	}
 	
 	public static void showCheckKingMessage() {

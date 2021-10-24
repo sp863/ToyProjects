@@ -4,8 +4,6 @@ import player.Player;
 import static utils.Constant.*;
 
 public class Queen extends Unit {
-	private int[] queenPossibleRange_dy = {-1,0,1,0,-1,-1,1,1};
-	private int[] queenPossibleRange_dx = {0,1,0,-1,-1,1,1,-1};
 	private int direction = 0;
 	private int distanceToTarget = 0;
 	
@@ -24,14 +22,23 @@ public class Queen extends Unit {
 		return false;
 	}
 	
+
+	@Override
+	public boolean unitCheckTile(int y, int x) {
+		if (checkUnitMoveRange(y, x) && checkUnitObstacle()) {
+			return true;
+		}
+		return false;
+	}
+	
 	public boolean checkUnitMoveRange(int y, int x) {
-		int currentY = super.unitLocationPoint.getY();
-		int currentX = super.unitLocationPoint.getX();
+		int currentQueenY = super.unitLocationPoint.getY();
+		int currentQueenX = super.unitLocationPoint.getX();
 		
 		for (int i = 0; i < QUEEN_DIRECTION_MAX; i++) {
 			for (int j = 1; j < BOARD_LENGTH; j++) {
-				int tempY = currentY+(queenPossibleRange_dy[i]*j);
-				int tempX = currentX+(queenPossibleRange_dx[i]*j);
+				int tempY = currentQueenY+(QUEEN_MOVE_RANGE_DY[i]*j);
+				int tempX = currentQueenX+(QUEEN_MOVE_RANGE_DX[i]*j);
 				if (checkBoardRange(tempY, tempX)) {
 					if (tempY == y && tempX == x) {
 						direction = i;
@@ -45,12 +52,11 @@ public class Queen extends Unit {
 	}
 	
 	public boolean checkUnitObstacle() {
-		int currentY = super.unitLocationPoint.getY();
-		int currentX = super.unitLocationPoint.getX();
-		
+		int currentQueenY = super.unitLocationPoint.getY();
+		int currentQueenX = super.unitLocationPoint.getX();
 		for (int i = 1; i < distanceToTarget; i++) {
-			int tempY = currentY+(queenPossibleRange_dy[direction]*i);
-			int tempX = currentX+(queenPossibleRange_dx[direction]*i);
+			int tempY = currentQueenY+(QUEEN_MOVE_RANGE_DY[direction]*i);
+			int tempX = currentQueenX+(QUEEN_MOVE_RANGE_DX[direction]*i);
 			
 			if (ChessGame.chessBoard[tempY][tempX] != null) {
 				return false;
@@ -81,8 +87,8 @@ public class Queen extends Unit {
 	public boolean unitCheckKingRange(int y, int x) {
 		for (int i = 0; i < QUEEN_DIRECTION_MAX; i++) {
 			for (int j = 1; j < BOARD_LENGTH; j++) {
-				int tempY = y+(queenPossibleRange_dy[i]*j);
-				int tempX = x+(queenPossibleRange_dx[i]*j);
+				int tempY = y+(QUEEN_MOVE_RANGE_DY[i]*j);
+				int tempX = x+(QUEEN_MOVE_RANGE_DX[i]*j);
 				if (checkBoardRange(tempY, tempX)) {
 					if (ChessGame.chessBoard[tempY][tempX] == myOpponent.getAliveUnit(KING_NAME)) {
 						direction = i;
@@ -97,8 +103,8 @@ public class Queen extends Unit {
 	
 	public boolean unitCheckKingObstacle(int y, int x) {
 		for (int i = 1; i < distanceToTarget; i++) {
-			int tempY = y + (queenPossibleRange_dy[direction]*i);
-			int tempX = x + (queenPossibleRange_dx[direction]*i);
+			int tempY = y + (QUEEN_MOVE_RANGE_DY[direction]*i);
+			int tempX = x + (QUEEN_MOVE_RANGE_DX[direction]*i);
 			if (ChessGame.chessBoard[tempY][tempX] != null) {
 				return false;
 			}

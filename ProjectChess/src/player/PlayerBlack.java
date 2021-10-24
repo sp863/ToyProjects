@@ -23,6 +23,7 @@ public class PlayerBlack extends Player{
 		aliveUnitList = new HashMap<>();
 		takenUnitList = new HashMap<>();
 		unitInit();
+		super.isKingOnCheck = false;
 	}
 
 	@Override

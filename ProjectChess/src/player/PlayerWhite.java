@@ -16,13 +16,14 @@ public class PlayerWhite extends Player{
 		super();
 		playerColor = PLAYER_COLOR_WHITE;
 	}
-
+	
 	@Override
 	public void playerInit(Player opponentPlayer) {
 		super.opponentPlayer = opponentPlayer;
 		aliveUnitList = new HashMap<>();
 		takenUnitList = new HashMap<>();
 		unitInit();
+		super.isKingOnCheck = false;
 	}
 
 	@Override
